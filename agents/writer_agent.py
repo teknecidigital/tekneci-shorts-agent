@@ -5,8 +5,8 @@ def generate_script():
     api_key = os.environ.get("GEMINI_API_KEY")
     genai.configure(api_key=api_key)
     
-    # En kararlı ve evrensel model adını kullanıyoruz
-    model = genai.GenerativeModel('gemini-pro')
+    # Güncel ve desteklenen model tanımı
+    model = genai.GenerativeModel('gemini-1.5-flash')
     prompt = "YouTube Shorts için 50 saniyelik, sürükleyici ve gizem dolu bir mini dizi senaryosu yaz. Kesinlikle başlığı, görsel tasvirleri ve seslendirme metnini belirt."
     
     response = model.generate_content(prompt)
