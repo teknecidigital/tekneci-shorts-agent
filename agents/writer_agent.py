@@ -9,7 +9,7 @@ def generate_script():
         print("HATA: GEMINI_API_KEY bulunamadı!")
         return
 
-    # Doğrudan Google Gemini REST API adresi (Model takıntısı yok, en güncel flash sürümü)
+    # Doğrudan Google Gemini REST API adresi (Model takıntısı ve kütüphane hatası yok)
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
     
     headers = {
