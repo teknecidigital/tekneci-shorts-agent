@@ -5,18 +5,30 @@ def generate_script():
     api_key = os.environ.get("GEMINI_API_KEY")
     genai.configure(api_key=api_key)
     
-    # Desteklenen modelleri otomatik listele ve uygun olanı seç
-    model_name = 'gemini-1.5-flash'
-    for m in genai.list_models():
-        if 'generateContent' in m.supported_generation_methods:
-            if '1.5' in m.name:
-                model_name = m.name
-                break
-
-    print(f"Kullanılan Model: {model_name}")
-    model = genai.GenerativeModel(model_name)
+    # Sırayla denenecek model listesi (Hangisi destekleniyorsa anında onu seçer)
+    candidate_models = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro', 'chat-bison-001']
     
-    prompt = "YouTube Shorts için 50 saniyelik, sürükleyici ve gizem dolu bir mini dizi senaryosu yaz. Kesinlikle başlığı, görsel tasvirleri ve seslendirme metnini belirt."
+    model = None
+    active_model_name = ""
+    
+    for model_name in candidate_models:
+        try:
+            print(f"Denenen model: {model_name}")
+            test_model = genai.GenerativeModel(model_name)
+            # Küçük bir test çağrısı ile modelin çalışıp çalışmadığını kontrol et
+            response = test_model.generate_content("Test")
+            model = test_model
+            active_model_name = model_name
+            print(f"Başarılı! Kullanılan model: {active_model_name}")
+            break
+        except Exception as e:
+            print(f"{model_name} desteklenmiyor veya hata verdi, sıradakine geçiliyor... Hata: {e}")
+            continue
+            
+    if model is None:
+        raise Exception("Hiçbir Gemini modeli bu API anahtarı ile eşleşmedi. Lütfen API anahtarınızı kontrol edin.")
+
+    prompt = "YouTube Shorts için 50 saniyelik, sürükleyici ve gizem dolu bir mini dizi senaryosu yaz. +18 olmasın. Kesinlikle başlığı, görsel tasvirleri ve seslendirme metnini belirt."
     
     response = model.generate_content(prompt)
     print("--- ÜRETİLEN SENARYO ---")
